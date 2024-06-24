@@ -1,0 +1,15 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "uce.mixins",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [
+    "rules.keepSpectatingOnTarget.MixinServerPlayerEntity",
+    "rules.keepSpectatingOnTarget.MixinServerPlayNetworkHandler",
+    "rules.playerKilledByChargedCreeperDropHead.MixinServerPlayerEntity"
+  ],
+  "server": [],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

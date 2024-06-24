@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "id": "uce",
+  "version": "${version}",
+  "name": "useless-carpet-extension",
+  "description": "",
+  "authors": [],
+  "contact": {
+    "repo": "https://github.com/2676959/useless-carpet-extension"
+  },
+  "license": "GPL-3.0",
+  "icon": "assets/uce/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "uce.UselessCarpetExtensionServer"
+    ]
+  },
+  "mixins": [
+    "uce.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "minecraft": "${minecraft_version}",
+    "carpet": ""
+  }
+}

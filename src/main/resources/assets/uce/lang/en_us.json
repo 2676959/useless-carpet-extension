@@ -1,0 +1,12 @@
+{
+  // Categories:
+  "carpet.category.uce": "useless",
+
+  // Rules:
+
+  // playerKilledByChargedCreeperDropHead
+  "carpet.rule.playerKilledByChargedCreeperDropHead.desc": "Players killed by charged creeper will drop their own player head items.",
+
+  //keepSpectatingOnTarget
+  "carpet.rule.keepSpectatingOnTarget.desc": "Keep spectating the target entity even when it entered other dimension. In vanilla, player will stop spectating its target after it entered other dimension."
+}
