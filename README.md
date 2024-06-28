@@ -1,4 +1,5 @@
 # Useless Carpet Extension
+Add some useless features in game just for fun.
 
 # Carpet Mod Settings
 ## keepSpectatingOnTarget
