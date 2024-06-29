@@ -15,7 +15,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import uce.UselessCarpetExtensionSettings;
+import static uce.UselessCarpetExtensionSettings.playerKilledByChargedCreeperDropHead;
 
 @Mixin(ServerPlayerEntity.class)
 public abstract class MixinServerPlayerEntity extends PlayerEntity {
@@ -26,7 +26,7 @@ public abstract class MixinServerPlayerEntity extends PlayerEntity {
 
     @Inject(at = @At("TAIL"), method = "onDeath")
     private void dropPlayerHead(DamageSource damageSource, CallbackInfo info) {
-        if (!UselessCarpetExtensionSettings.playerKilledByChargedCreeperDropHead) {
+        if (!playerKilledByChargedCreeperDropHead) {
             return;
         }
         CreeperEntity creeperEntity;

@@ -16,7 +16,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import uce.UselessCarpetExtensionSettings;
+import static uce.UselessCarpetExtensionSettings.keepSpectatingOnTarget;
 
 import java.util.Set;
 import java.util.UUID;
@@ -43,12 +43,12 @@ public abstract class MixinServerPlayerEntity extends PlayerEntity {
     // Set the condition in: if (Entity.isAlive) always true.
     @Redirect(method = "tick()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;isAlive()Z"))
     private boolean skipAliveTest(Entity entity) {
-        return UselessCarpetExtensionSettings.keepSpectatingOnTarget || entity.isAlive();
+        return keepSpectatingOnTarget || entity.isAlive();
     }
 
     @Inject(method = "tick()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/network/ServerPlayerEntity;updatePositionAndAngles(DDDFF)V"))
     private void updateCameraEntity(CallbackInfo ci) {
-        if (!UselessCarpetExtensionSettings.keepSpectatingOnTarget) {
+        if (!keepSpectatingOnTarget) {
             return;
         }
         Entity camEntity = this.getCameraEntity();

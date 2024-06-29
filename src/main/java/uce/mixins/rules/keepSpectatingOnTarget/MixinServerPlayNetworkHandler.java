@@ -14,6 +14,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import static uce.UselessCarpetExtensionSettings.keepSpectatingOnTarget;
 
 @Mixin(ServerPlayNetworkHandler.class)
 public abstract class MixinServerPlayNetworkHandler extends ServerCommonNetworkHandler implements ServerPlayPacketListener {
@@ -28,8 +29,10 @@ public abstract class MixinServerPlayNetworkHandler extends ServerCommonNetworkH
     // Send packet to notify client update CameraEntity
     @Inject(method = "onPlayerMove", at = @At(value = "TAIL"))
     private void playerMovePacketTest(PlayerMoveC2SPacket packet, CallbackInfo ci) {
-        if (this.player.getCameraEntity() != this.player) {
-            this.sendPacket(new SetCameraEntityS2CPacket(this.player.getCameraEntity()));
+        if (keepSpectatingOnTarget) {
+            if (this.player.getCameraEntity() != this.player) {
+                this.sendPacket(new SetCameraEntityS2CPacket(this.player.getCameraEntity()));
+            }
         }
     }
 }
