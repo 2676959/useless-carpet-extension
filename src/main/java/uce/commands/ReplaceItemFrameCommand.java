@@ -29,7 +29,7 @@ import static net.minecraft.server.command.CommandManager.literal;
 
 import static carpet.utils.CommandHelper.canUseCommand;
 
-import static uce.utils.nbtHelper.createNbtListFromFloatArray;
+import static uce.utils.NbtHelper.createNbtListFromFloatArray;
 import static uce.UselessCarpetExtensionSettings.commandReplaceItemFrame;
 
 public class ReplaceItemFrameCommand {

@@ -6,7 +6,7 @@ import net.minecraft.nbt.NbtList;
 import java.util.List;
 import java.util.ListIterator;
 
-public class nbtHelper {
+public class NbtHelper {
 
     public static NbtList createNbtListFromFloatArray(Float[] arr) {
         List<Float> list = List.of(arr);

@@ -9,7 +9,7 @@ import net.minecraft.server.command.ServerCommandSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uce.commands.ReplaceItemFrameCommand;
-import uce.utils.uceTranslations;
+import uce.utils.UceTranslations;
 import java.util.Map;
 
 public class UselessCarpetExtensionServer implements CarpetExtension, ModInitializer {
@@ -45,6 +45,6 @@ public class UselessCarpetExtensionServer implements CarpetExtension, ModInitial
     @Override
     public Map<String, String> canHasTranslations(String lang)
     {
-        return uceTranslations.getTranslationFromResourcePath(lang);
+        return UceTranslations.getTranslationFromResourcePath(lang);
     }
 }

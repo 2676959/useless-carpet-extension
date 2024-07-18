@@ -11,11 +11,11 @@ import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.Map;
 
-public class uceTranslations
+public class UceTranslations
 {
     public static Map<String, String> getTranslationFromResourcePath(String lang)
     {
-        InputStream langFile = uceTranslations.class.getClassLoader().getResourceAsStream("assets/uce/lang/%s.json".formatted(lang));
+        InputStream langFile = UceTranslations.class.getClassLoader().getResourceAsStream("assets/uce/lang/%s.json".formatted(lang));
         if (langFile == null) {
             // we don't have that language
             return Collections.emptyMap();
