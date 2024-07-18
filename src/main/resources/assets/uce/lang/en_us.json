@@ -7,6 +7,19 @@
   // playerKilledByChargedCreeperDropHead
   "carpet.rule.playerKilledByChargedCreeperDropHead.desc": "Players killed by charged creeper will drop their own player head",
 
-  //keepSpectatingOnTarget
-  "carpet.rule.keepSpectatingOnTarget.desc": "Keep spectating the target entity even when it entered other dimension. In vanilla, player will stop spectating its target after it entered other dimension."
+  // keepSpectatingOnTarget
+  "carpet.rule.keepSpectatingOnTarget.desc": "Keep spectating the target entity even when it entered other dimension. In vanilla, player will stop spectating its target after it entered other dimension.",
+
+  // Commands:
+
+  // replaceItemFrame
+  "carpet.rule.commandReplaceItemFrame.desc": "Replace all (glow) item frames containing item in selected area with item display entity, excluding item frames containing maps. Glow item frame will be replaced by the item display entity that also appears to glow.",
+
+  "commands.uce.replaceItemFrame.failed.no_item_frame_found": "No (Glow) Item Frame was found",
+
+  "commands.uce.replaceItemFrame.success.both": "Successfully replaced %d/%d Item Frame and %d/%d Glow Item Frame",
+
+  "commands.uce.replaceItemFrame.success.item_frame": "Successfully replaced %d/%d Item Frame",
+
+  "commands.uce.replaceItemFrame.success.glow_item_frame": "Successfully replaced %d/%d Glow Item Frame"
 }
