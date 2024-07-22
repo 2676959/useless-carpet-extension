@@ -5,6 +5,7 @@ import java.util.function.BiFunction;
 import java.util.function.Predicate;
 
 import com.mojang.brigadier.CommandDispatcher;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.decoration.InteractionEntity;
 import net.minecraft.entity.decoration.DisplayEntity;
@@ -20,13 +21,12 @@ import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 
-import carpet.utils.Translations;
-
 import static net.minecraft.command.argument.BlockPosArgumentType.blockPos;
 import static net.minecraft.command.argument.BlockPosArgumentType.getBlockPos;
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 
+import static carpet.utils.Translations.tr;
 import static carpet.utils.CommandHelper.canUseCommand;
 
 import static uce.utils.NbtHelper.createNbtListFromFloatArray;
@@ -34,16 +34,12 @@ import static uce.UselessCarpetExtensionSettings.commandReplaceItemFrame;
 
 public class ReplaceItemFrameCommand {
 
+    private static final String TAG = "uce.rif";
     private static final NbtElement ROTATION_AXIS_NBT = createNbtListFromFloatArray(new Float[]{0.0F, 0.0F, -1.0F});
-
     private static final NbtElement TRANSFORMATION_SCALE_NBT = createNbtListFromFloatArray(new Float[]{0.5F,0.5F,0.5F});
-
     private static final NbtElement TRANSFORMATION_RIGHT_ROTATION_NBT = createNbtListFromFloatArray(new Float[]{0.0F,0.0F,0.0F,1.0F});
-
     private static final NbtElement TRANSFORMATION_TRANSLATION_NBT = createNbtListFromFloatArray(new Float[]{0.0F,0.0F,0.0F});
-
     private static final NbtElement MAX_BRIGHTNESS_NBT = createBrightnessNbt();
-
     private static final NbtCompound TRANSFORMATION_NBT = createTransformationNbt();
 
     private static NbtCompound createTransformationNbt() {
@@ -79,17 +75,27 @@ public class ReplaceItemFrameCommand {
                                                     ServerCommandSource source = context.getSource();
                                                     BlockPos from = getBlockPos(context, "from");
                                                     BlockPos to = getBlockPos(context, "to");
-                                                    context.getSource().getServer().execute(
-                                                            () -> ReplaceItemFrameCommand.execute(source, from, to));
+                                                    source.getServer().execute(
+                                                            () -> ReplaceItemFrameCommand.executeReplace(source, from, to));
                                                     return 1;
                                                 }
+                                        ).then(literal("remove")
+                                                .executes(
+                                                        context -> {
+                                                            ServerCommandSource source = context.getSource();
+                                                            BlockPos from = getBlockPos(context, "from");
+                                                            BlockPos to = getBlockPos(context, "to");
+                                                            executeRemove(source, from, to);
+                                                            return 1;
+                                                        }
+                                                )
                                         )
                                 )
                         )
         );
     }
 
-    private static void execute(ServerCommandSource source, BlockPos from, BlockPos to) {
+    private static void executeReplace(ServerCommandSource source, BlockPos from, BlockPos to) {
         ServerWorld world = source.getWorld();
         Box box = new Box(from.getX(), from.getY(), from.getZ(), to.getX(), to.getY(), to.getZ());
         List<ItemFrameEntity> itemFrameEntities = world.getEntitiesByType(EntityType.ITEM_FRAME, box, (Predicate.not(ItemFrameEntity::containsMap)));
@@ -99,24 +105,49 @@ public class ReplaceItemFrameCommand {
         boolean noItemFrame = itemFrameEntities.isEmpty();
         boolean noGlowItemFrame = glowItemFrameEntities.isEmpty();
         if (noItemFrame && noGlowItemFrame) {
-            source.sendError(Text.of(Translations.tr("commands.uce.replaceItemFrame.failed.no_item_frame_found")));
+            source.sendError(Text.of(tr("commands.uce.replaceItemFrame.failed.no_item_frame_found")));
         } else if (!noItemFrame && !noGlowItemFrame) {
-            source.sendFeedback(() -> Text.of(Translations.tr("commands.uce.replaceItemFrame.success.both")
+            source.sendFeedback(() -> Text.of(tr("commands.uce.replaceItemFrame.success.both")
                             .formatted(
                                     replacedItemFrames, itemFrameEntities.size(),
                                     replacedGlowItemFrames, glowItemFrameEntities.size())),
                     true);
         } else if (!noItemFrame) {
-            source.sendFeedback(() -> Text.of(Translations.tr("commands.uce.replaceItemFrame.success.item_frame")
+            source.sendFeedback(() -> Text.of(tr("commands.uce.replaceItemFrame.success.item_frame")
                     .formatted(
                             replacedItemFrames, itemFrameEntities.size())),
                     true);
         } else {
-            source.sendFeedback(() -> Text.of(Translations.tr("commands.uce.replaceItemFrame.success.glow_item_frame")
+            source.sendFeedback(() -> Text.of(tr("commands.uce.replaceItemFrame.success.glow_item_frame")
                     .formatted(
                             replacedGlowItemFrames, glowItemFrameEntities.size())),
                     true);
         }
+    }
+
+    private static void executeRemove(ServerCommandSource source, BlockPos from, BlockPos to) {
+        ServerWorld world = source.getWorld();
+        Box box = new Box(from.getX(), from.getY(), from.getZ(), to.getX(), to.getY(), to.getZ());
+        List<DisplayEntity.ItemDisplayEntity> itemDisplayEntities = world.getEntitiesByType(EntityType.ITEM_DISPLAY, box, ReplaceItemFrameCommand::hasCommandTag);
+        if (itemDisplayEntities.isEmpty()) {
+            source.sendError(Text.of(tr("commands.uce.replaceItemFrame.failed.no_item_display_found")));
+            return;
+        }
+        int itemDisplayRemoved = itemDisplayEntities.size();
+        removeEntities(itemDisplayEntities);
+        List<InteractionEntity> interactionEntities = world.getEntitiesByType(EntityType.INTERACTION, box, ReplaceItemFrameCommand::hasCommandTag);
+        removeEntities(interactionEntities);
+        source.sendFeedback(() -> Text.of(tr("commands.uce.replaceItemFrame.success.remove").formatted(itemDisplayRemoved)), true);
+    }
+
+    private static <T extends Entity> void removeEntities(List<T> entities) {
+        for (Entity entity : entities) {
+            entity.kill();
+        }
+    }
+
+    private static <T extends Entity> boolean hasCommandTag(T entity) {
+        return entity.getCommandTags().contains(TAG);
     }
 
     private static <T extends ItemFrameEntity> int replaceItemFrames(ServerWorld world, List<T> itemFrameEntities, BiFunction<Integer, NbtCompound, NbtCompound> createItemDisplayNbt) {
@@ -128,10 +159,12 @@ public class ReplaceItemFrameCommand {
             NbtCompound itemDisplayNbt = createItemDisplayNbt.apply(rotationIndex, itemDisplayEntity.writeNbt(new NbtCompound()));
             itemDisplayEntity.readNbt(itemDisplayNbt);
             itemDisplayEntity.copyPositionAndRotation(itemFrameEntity);
+            itemDisplayEntity.addCommandTag(TAG);
             InteractionEntity interactionEntity = null;
             if (itemStack.hasCustomName()) {
                 interactionEntity = createHoverText(world, itemStack.getName());
                 interactionEntity.refreshPositionAndAngles(itemFrameEntity.getX(), itemFrameEntity.getY() - 0.125F, itemFrameEntity.getZ(), itemFrameEntity.getYaw(), itemFrameEntity.getPitch());
+                interactionEntity.addCommandTag(TAG);
             }
             if (world.spawnEntity(itemDisplayEntity) && ((interactionEntity == null) || world.spawnEntity(interactionEntity))) {
                 itemFrameEntity.kill();
