@@ -22,7 +22,7 @@ import java.util.Set;
 import java.util.UUID;
 
 @Mixin(ServerPlayerEntity.class)
-public abstract class MixinServerPlayerEntity extends PlayerEntity {
+public abstract class ServerPlayerEntityMixin extends PlayerEntity {
 
     @Shadow @Final
     public MinecraftServer server;
@@ -36,7 +36,7 @@ public abstract class MixinServerPlayerEntity extends PlayerEntity {
     @Shadow
     public abstract void teleport(ServerWorld targetWorld, double x, double y, double z, float yaw, float pitch);
 
-    public MixinServerPlayerEntity(World world, BlockPos pos, float yaw, GameProfile gameProfile) {
+    public ServerPlayerEntityMixin(World world, BlockPos pos, float yaw, GameProfile gameProfile) {
         super(world, pos, yaw, gameProfile);
     }
 

@@ -4,11 +4,16 @@
   "package": "uce.mixins",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
-    "rules.keepSpectatingOnTarget.MixinServerPlayerEntity",
-    "rules.keepSpectatingOnTarget.MixinServerPlayNetworkHandler",
-    "rules.playerKilledByChargedCreeperDropHead.MixinServerPlayerEntity"
+    "rules.keepSpectatingOnTarget.ServerPlayerEntityMixin",
+    "rules.keepSpectatingOnTarget.ServerPlayNetworkHandlerMixin",
+    "rules.playerKilledByChargedCreeperDropHead.ServerPlayerEntityMixin"
   ],
-  "server": [],
+  "server": [
+
+  ],
+  "client": [
+
+  ],
   "injectors": {
     "defaultRequire": 1
   }
