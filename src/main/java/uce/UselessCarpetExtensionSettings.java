@@ -18,4 +18,7 @@ public class UselessCarpetExtensionSettings {
             options = {"true", "false", "0", "1", "2", "3", "4", "ops"}
     )
     public static String commandReplaceItemFrame = "false";
+
+    @Rule(categories = {UCE, FEATURE})
+    public static boolean retainTridentDamage = false;
 }

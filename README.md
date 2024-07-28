@@ -21,8 +21,15 @@ Players killed by charged creeper will drop their own player head.
 Replace all (glow) item frames containing item in selected area with item display entity, excluding item frames containing maps.
 * Type: `String`
 * Default value: `false`
-* Allowed options: `true`, `false`, `0`, `1`, `2`, `ops`, `3`, `4`
+* Allowed options: `true`, `false`, `0`, `1`, `2`, `3`, `4`, `ops`
 * Categories: `UCE`, `COMMAND`
+
+## retainTridentDamage
+Allow trident to still deal damage after hitting an entity or block
+* type: `Boolean`
+* Default value: `false`
+* Allowed options: `true`, `false`
+* Categories: `UCE`, `FEATURE`
 
 # Commands
 

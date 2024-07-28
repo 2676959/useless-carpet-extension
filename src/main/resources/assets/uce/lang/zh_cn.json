@@ -10,16 +10,25 @@
   // keepSpectatingOnTarget
   "carpet.rule.keepSpectatingOnTarget.desc": "在旁观其他实体时，当其进入其他维度后仍会继续旁观该实体。在原版中，旁观者不会随被旁观的实体进入其他维度而且会脱离被旁观的实体。",
 
-  // Commands:
-
-  // replaceItemFrame
+  // replaceItemFrameCommand
   "carpet.rule.commandReplaceItemFrame.desc": "替换指定区域内含有物品的(荧光)物品展示框为物品展示实体，不包括含有地图的物品展示框。荧光物品展示框会被替换为同样具有荧光效果的物品展示实体。",
 
+  // retainTridentDamage
+  "carpet.rule.retainTridentDamage.desc": "让三叉戟能够在击中实体或方块后仍能造成伤害",
+
+  // poseCommand
+  "carpet.rule.commandPose.desc": "",
+
+  // Commands:
+
+  // /replaceItemFrame
   "commands.uce.replaceItemFrame.failed.no_item_frame_found": "未找到(荧光)物品展示框",
-
+  "commands.uce.replaceItemFrame.failed.no_item_display_found": "未找到含有该命令创建标签的展示实体",
   "commands.uce.replaceItemFrame.success.both": "成功替换%d/%d个物品展示框和%d/%d个荧光物品展示框",
-
   "commands.uce.replaceItemFrame.success.item_frame": "成功替换%d/%d个物品展示框",
+  "commands.uce.replaceItemFrame.success.glow_item_frame": "成功替换%d/%d个荧光展示框",
+  "commands.uce.replaceItemFrame.success.remove": "成功移除%d个物品展示实体",
 
-  "commands.uce.replaceItemFrame.success.glow_item_frame": "成功替换%d/%d个荧光展示框"
+  // /pose
+  "argument.player_pose.invalid": "未知动作 %s"
 }
