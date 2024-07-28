@@ -27,7 +27,7 @@ dependencies {
     mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
     modImplementation "carpet:fabric-carpet:${project.carpet_core_version}"
-
+    include(implementation(annotationProcessor("io.github.llamalad7:mixinextras-fabric:0.4.0")))
 }
 
 processResources {
