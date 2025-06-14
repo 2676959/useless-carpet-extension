@@ -20,10 +20,10 @@
   "carpet.rule.throwableFireCharge.desc": "允许玩家使用燃烧弹物品发射恶魂火球，潜行时长按可蓄力增加爆炸威力。",
 
   // muteJukebox
-  "carpet.rule.muteJukebox.desc": "阻止唱片机播放音乐。",
+  "carpet.rule.muteJukebox.desc": "阻止唱片机播放音乐。该规则总是会覆盖jukeboxNoteblockMode。",
 
   // jukeboxAsNoteblock
-  "carpet.rule.jukeboxNoteblockMode.desc": "唱片机仅在上方方块为空气时播放。",
+  "carpet.rule.jukeboxNoteblockMode.desc": "唱片机仅在上方方块为空气时播放。该规则总是被muteJukebox覆盖。",
 
   // Commands:
 
