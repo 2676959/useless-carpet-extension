@@ -20,5 +20,8 @@ public class UselessCarpetExtensionSettings {
     public static String commandReplaceItemFrame = "false";
 
     @Rule(categories = {UCE, FEATURE})
+    public static boolean throwableFireCharge = false;
+
+    @Rule(categories = {UCE, FEATURE})
     public static boolean retainTridentDamage = false;
 }

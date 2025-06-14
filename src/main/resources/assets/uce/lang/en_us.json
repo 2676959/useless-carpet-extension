@@ -16,6 +16,9 @@
   // retainTridentDamage
   "carpet.rule.retainTridentDamage.desc": "Allow trident to still deal damage after hitting an entity or block",
 
+  // throwableFireCharge
+  "carpet.rule.throwableFireCharge.desc": "Allow player to throw fire charge. Hold use to charge and deal larger explosion on hit. Hold sneak to make the fire ball stay in place.",
+
   // poseCommand
   "carpet.rule.commandPose.desc": "",
 

@@ -8,7 +8,8 @@
     "rules.keepSpectatingOnTarget.ServerPlayerEntityMixin",
     "rules.keepSpectatingOnTarget.ServerPlayNetworkHandlerMixin",
     "rules.playerKilledByChargedCreeperDropHead.ServerPlayerEntityMixin",
-    "rules.retainTridentDamage.TridentEntityMixin"
+    "rules.retainTridentDamage.TridentEntityMixin",
+    "rules.throwableFireCharge.FireChargeItemMixin"
   ],
   "server": [
   ],

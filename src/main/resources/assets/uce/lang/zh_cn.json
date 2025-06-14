@@ -16,6 +16,9 @@
   // retainTridentDamage
   "carpet.rule.retainTridentDamage.desc": "让三叉戟能够在击中实体或方块后仍能造成伤害",
 
+  // throwableFireCharge
+  "carpet.rule.throwableFireCharge.desc": "允许玩家使用燃烧弹物品发射恶魂火球，长按蓄力增加爆炸威力。潜行时使用可在原地释放火球。",
+
   // poseCommand
   "carpet.rule.commandPose.desc": "",
 

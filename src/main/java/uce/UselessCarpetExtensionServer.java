@@ -1,16 +1,21 @@
 package uce;
 
+import java.util.Map;
+
 import carpet.CarpetExtension;
 import carpet.CarpetServer;
+
 import com.mojang.brigadier.CommandDispatcher;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.server.command.ServerCommandSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import uce.commands.ReplaceItemFrameCommand;
+import uce.commands.PoseCommand;
 import uce.utils.UceTranslations;
-import java.util.Map;
+
 
 public class UselessCarpetExtensionServer implements CarpetExtension, ModInitializer {
 
@@ -40,6 +45,7 @@ public class UselessCarpetExtensionServer implements CarpetExtension, ModInitial
     @Override
     public void registerCommands(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess commandRegistryAccess) {
         ReplaceItemFrameCommand.register(dispatcher);
+        PoseCommand.register(dispatcher);
     }
 
     @Override
