@@ -20,10 +20,10 @@
   "carpet.rule.throwableFireCharge.desc": "Allow player to throw fire charge. Hold use to charge and deal larger explosion on hit. Hold sneak to make the fire ball stay in place.",
 
   // muteJukebox
-  "carpet.rule.muteJukebox.desc": "Stop jukebox from playing music. \"as_note_block\": Jukebox only plays sound when its top is air.",
+  "carpet.rule.muteJukebox.desc": "Stop jukebox from playing music.",
 
-  // poseCommand
-  "carpet.rule.commandPose.desc": "",
+  // jukeboxAsNoteblock
+  "carpet.rule.jukeboxNoteblockMode.desc": "Jukebox only plays sound when its top is air.",
 
   // Commands:
 
