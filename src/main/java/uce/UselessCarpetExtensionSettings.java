@@ -6,6 +6,7 @@ import static carpet.api.settings.RuleCategory.*;
 public class UselessCarpetExtensionSettings {
 
     public static final String UCE = "uce";
+    public static final String JUKEBOX = "jukebox";
 
     @Rule(categories = {UCE, FEATURE})
     public static boolean playerKilledByChargedCreeperDropHead = false;
@@ -24,4 +25,10 @@ public class UselessCarpetExtensionSettings {
 
     @Rule(categories = {UCE, FEATURE})
     public static boolean retainTridentDamage = false;
+
+    @Rule(categories = {UCE, FEATURE, JUKEBOX})
+    public static boolean muteJukebox = false;
+
+    @Rule(categories = {UCE, FEATURE, JUKEBOX})
+    public static boolean jukeboxNoteblockMode = false;
 }
