@@ -9,14 +9,21 @@ import net.minecraft.item.FireChargeItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
+import net.minecraft.network.packet.s2c.play.PlaySoundFromEntityS2CPacket;
+import net.minecraft.network.packet.s2c.play.PlaySoundS2CPacket;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.stat.Stats;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.*;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
@@ -26,7 +33,9 @@ import static uce.utils.ExplosiveProjectileHelper.setPowerFromEuler;
 import static uce.UselessCarpetExtensionSettings.throwableFireCharge;
 
 @Mixin(FireChargeItem.class)
-public class FireChargeItemMixin extends Item {
+public abstract class FireChargeItemMixin extends Item {
+
+    @Shadow protected abstract void playUseSound(World world, BlockPos pos);
 
     public FireChargeItemMixin(Settings settings) {
         super(settings);
@@ -41,7 +50,7 @@ public class FireChargeItemMixin extends Item {
         if (player != null) {
             this.use(context.getWorld(), context.getPlayer(), context.getHand());
         }
-        cir.setReturnValue(ActionResult.PASS);
+        cir.setReturnValue(ActionResult.CONSUME);
     }
 
     @Override
@@ -51,35 +60,17 @@ public class FireChargeItemMixin extends Item {
             return TypedActionResult.fail(stack);
         }
         if (!world.isClient) {
+            UselessCarpetExtensionServer.LOGGER.info("use");
             switch (hand) {
                 case MAIN_HAND:
                     if (!user.isSneaking()) {
-                        FireballEntity fireballEntity = new FireballEntity(world, user, 0, 0, 0, 1);
-                        fireballEntity.setPosition(user.getEyePos());
-                        fireballEntity.setItem(stack);
-                        setPowerFromEuler(fireballEntity, user.getPitch(), user.getYaw(), 0.0F, 0.1F);
-                        world.spawnEntity(fireballEntity);
-                        user.incrementStat(Stats.USED.getOrCreateStat(this));
-                        user.playSound(SoundEvents.ITEM_FIRECHARGE_USE, 1.0F, 1.0F);
-                        world.playSound(user, user.getBlockPos(), SoundEvents.ITEM_FIRECHARGE_USE, SoundCategory.PLAYERS);
-                        if (!user.getAbilities().creativeMode) {
-                            stack.decrement(1);
-                        }
+                        this.shootFireball((ServerWorld) world, stack, user, 1, 0.1F);
                         break;
                     }
                     user.setCurrentHand(hand);
                     return TypedActionResult.fail(stack);
                 case OFF_HAND:
-                    SmallFireballEntity smallFireballEntity = new SmallFireballEntity(EntityType.SMALL_FIREBALL, world);
-                    smallFireballEntity.setPosition(user.getEyePos());
-                    setPowerFromEuler(smallFireballEntity, user.getPitch(), user.getYaw(), 0.0F, 0.1F);
-                    world.spawnEntity(smallFireballEntity);
-                    user.incrementStat(Stats.USED.getOrCreateStat(this));
-                    user.playSound(SoundEvents.ITEM_FIRECHARGE_USE, 1.0F, 1.0F);
-                    world.playSound(user, user.getBlockPos(), SoundEvents.ITEM_FIRECHARGE_USE, SoundCategory.PLAYERS);
-                    if (!user.getAbilities().creativeMode) {
-                        stack.decrement(1);
-                    }
+                    this.shootSmallFireBall((ServerWorld) world, stack, user, 0.1F);
             }
 
         }
@@ -91,23 +82,12 @@ public class FireChargeItemMixin extends Item {
         if (!(throwableFireCharge && ! world.isClient() && (user instanceof PlayerEntity playerEntity))) {
             return;
         }
-        int maxUseTime = this.getMaxUseTime(stack);
-        int chargedTime = maxUseTime - remainingUseTicks;
-        int explosionPower = Math.min(chargedTime / 20 + 1, 8);
-        FireballEntity fireballEntity = new FireballEntity(world, playerEntity, 0, 0, 0, explosionPower);
-        fireballEntity.setPosition(user.getEyePos());
-        fireballEntity.setItem(stack);
-        if (chargedTime > 20) {
-            float basePower = explosionPower * 0.1F;
-            setPowerFromEuler(fireballEntity, user.getPitch(), user.getYaw(), 0.0F, basePower);
-        }
-        world.spawnEntity(fireballEntity);
-        playerEntity.incrementStat(Stats.USED.getOrCreateStat(this));
-        playerEntity.playSound(SoundEvents.ITEM_FIRECHARGE_USE, 1.0F, 1.0F);
-        world.playSound(playerEntity, playerEntity.getBlockPos(), SoundEvents.ITEM_FIRECHARGE_USE, SoundCategory.PLAYERS);
-        if (!playerEntity.getAbilities().creativeMode) {
-            stack.decrement(1);
-        }
+
+        UselessCarpetExtensionServer.LOGGER.info("stop use");
+        int chargedTime = this.getMaxUseTime(stack) - remainingUseTicks;
+        int explosionPower = this.getExplosionPower(chargedTime);
+        float basePower = (chargedTime < 20) ? 0.0F : Math.max(explosionPower * 0.025F, 0.1F);
+        this.shootFireball((ServerWorld) world, stack, playerEntity, explosionPower, basePower);
     }
 
     @Override
@@ -115,12 +95,11 @@ public class FireChargeItemMixin extends Item {
         if (!(throwableFireCharge && ! world.isClient() && (user instanceof PlayerEntity playerEntity))) {
             return;
         }
-        int maxUseTime = this.getMaxUseTime(stack);
-        int chargedTime = maxUseTime - remainingUseTicks;
-        if (chargedTime % 20 == 0) {
-            int explosionPower = Math.min(chargedTime / 20 + 1, 8);
+        if (remainingUseTicks % 20 == 0) {
+            int chargedTime = this.getMaxUseTime(stack) - remainingUseTicks;
+            int explosionPower = this.getExplosionPower(chargedTime);
             UselessCarpetExtensionServer.LOGGER.info("exp power: {}", explosionPower);
-            MutableText p = Text.literal("■".repeat(explosionPower)).formatted(Formatting.GREEN).append(Text.literal("■".repeat(8 - explosionPower)).withColor(16777215));
+            MutableText p = Text.literal("■".repeat(explosionPower)).withColor(15641624).append(Text.literal("■".repeat(8 - explosionPower)).withColor(5646848));
             playerEntity.sendMessage(p, true);
         }
     }
@@ -133,5 +112,38 @@ public class FireChargeItemMixin extends Item {
     @Override
     public int getMaxUseTime(ItemStack stack) {
         return 72000;
+    }
+
+    @Unique
+    private int getExplosionPower(int chargedTime) {
+        return Math.min(chargedTime / 20 + 1, 8);
+    }
+
+    @Unique
+    private void shootFireball(ServerWorld world, ItemStack stack, PlayerEntity user, int explosionPower, float basePower) {
+        FireballEntity fireballEntity = new FireballEntity(world, user, 0, 0, 0, explosionPower);
+        fireballEntity.setPosition(user.getEyePos());
+        fireballEntity.setItem(stack);
+        setPowerFromEuler(fireballEntity, user.getPitch(), user.getYaw(), 0.0F, basePower);
+        world.spawnEntity(fireballEntity);
+        user.incrementStat(Stats.USED.getOrCreateStat(this));
+        this.playUseSound(world, user.getBlockPos());
+        if (!user.getAbilities().creativeMode) {
+            stack.decrement(1);
+        }
+    }
+
+    @Unique
+    private void shootSmallFireBall(ServerWorld world, ItemStack stack, PlayerEntity user, float basePower) {
+        SmallFireballEntity smallFireballEntity = new SmallFireballEntity(EntityType.SMALL_FIREBALL, world);
+        smallFireballEntity.setPosition(user.getEyePos());
+        setPowerFromEuler(smallFireballEntity, user.getPitch(), user.getYaw(), 0.0F, basePower);
+        world.spawnEntity(smallFireballEntity);
+        user.incrementStat(Stats.USED.getOrCreateStat(this));
+        user.playSound(SoundEvents.ITEM_FIRECHARGE_USE, 1.0F, 1.0F);
+        world.playSound(user, user.getBlockPos(), SoundEvents.ITEM_FIRECHARGE_USE, SoundCategory.PLAYERS);
+        if (!user.getAbilities().creativeMode) {
+            stack.decrement(1);
+        }
     }
 }
