@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 
 import uce.commands.ReplaceItemFrameCommand;
 
+import uce.commands.SleepCommand;
 import uce.utils.UceTranslations;
 
 
@@ -45,6 +46,7 @@ public class UselessCarpetExtensionServer implements CarpetExtension, ModInitial
     @Override
     public void registerCommands(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess commandRegistryAccess) {
         ReplaceItemFrameCommand.register(dispatcher);
+        SleepCommand.register(dispatcher);
     }
 
     @Override
