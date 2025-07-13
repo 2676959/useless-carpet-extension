@@ -26,7 +26,7 @@
   "carpet.rule.jukeboxNoteblockMode.desc": "唱片机仅在上方方块为空气时播放。该规则总是被muteJukebox覆盖。",
 
   // creeperDropAllDiscs
-  "carpet.rule.creeperDropAllDiscs.desc": "苦力怕被骷髅杀死后可掉落所有种类的唱片",
+  "carpet.rule.creeperDropAllDiscs.desc": "苦力怕被骷髅杀死后可掉落所有种类的唱片。",
 
   // Commands:
 
