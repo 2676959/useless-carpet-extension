@@ -52,6 +52,13 @@
 * 可用选项: `true`, `false`
 * 所属类别: `UCE`, `FEATURE`, `JUKEBOX`
 
+## creeperDropAllDiscs
+苦力怕被骷髅杀死后可掉落所有种类的唱片。
+* 数据类型: `Boolean`
+* 默认值: `false`
+* 可用选项: `true`, `false`
+* 所属类别: `UCE`, `FEATURE`
+
 # 命令
 
 ## 替换（发光）展示框
