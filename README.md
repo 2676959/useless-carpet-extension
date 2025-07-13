@@ -1,3 +1,4 @@
+[English](README.md) [中文](README_zh.md)
 # Useless Carpet Extension
 Add some useless features in game just for fun.
 
