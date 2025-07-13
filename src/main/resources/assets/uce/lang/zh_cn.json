@@ -5,7 +5,7 @@
   // Rules:
 
   // playerKilledByChargedCreeperDropHead
-  "carpet.rule.playerKilledByChargedCreeperDropHead.desc": "被闪电杀死的玩家会掉落其头颅。",
+  "carpet.rule.playerKilledByChargedCreeperDropHead.desc": "被闪电苦力怕杀死的玩家会掉落其头颅。",
 
   // keepSpectatingOnTarget
   "carpet.rule.keepSpectatingOnTarget.desc": "在旁观其他实体时，当其进入其他维度后仍会继续旁观该实体。在原版中，旁观者不会随被旁观的实体进入其他维度而且会脱离被旁观的实体。",
@@ -24,6 +24,9 @@
 
   // jukeboxAsNoteblock
   "carpet.rule.jukeboxNoteblockMode.desc": "唱片机仅在上方方块为空气时播放。该规则总是被muteJukebox覆盖。",
+
+  // creeperDropAllDiscs
+  "carpet.rule.creeperDropAllDiscs.desc": "苦力怕被骷髅杀死后可掉落所有种类的唱片",
 
   // Commands:
 

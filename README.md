@@ -52,6 +52,13 @@ Jukebox only plays sound when its top is air. Note: this rule is always overridd
 * Allowed options: `true`, `false`
 * Categories: `UCE`, `FEATURE`, `JUKEBOX`
 
+## creeperDropAllDiscs
+Creeper killed by skeleton can drop all types of music discs.
+* type: `Boolean`
+* Default value: `false`
+* Allowed options: `true`, `false`
+* Categories: `UCE`, `FEATURE`
+
 # Commands
 
 ## Replace (Glow) Item Frame command 
