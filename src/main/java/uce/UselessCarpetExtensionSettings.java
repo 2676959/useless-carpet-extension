@@ -31,4 +31,7 @@ public class UselessCarpetExtensionSettings {
 
     @Rule(categories = {UCE, FEATURE, JUKEBOX})
     public static boolean jukeboxNoteblockMode = false;
+
+    @Rule(categories = {UCE, FEATURE})
+    public static boolean creeperDropAllDiscs = false;
 }

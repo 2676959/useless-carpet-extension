@@ -25,6 +25,9 @@
   // jukeboxAsNoteblock
   "carpet.rule.jukeboxNoteblockMode.desc": "Jukebox only plays sound when its top is air. Note: this rule is always overridden by muteJukebox.",
 
+  // creeperDropAllDiscs
+  "carpet.rule.creeperDropAllDiscs.desc": "Creeper killed by skeleton can drop all types of music discs.",
+
   // Commands:
 
   // /replaceItemFrame
