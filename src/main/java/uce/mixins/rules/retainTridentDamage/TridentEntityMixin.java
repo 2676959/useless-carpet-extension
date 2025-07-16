@@ -20,9 +20,15 @@ public abstract class TridentEntityMixin extends PersistentProjectileEntity {
 
     @Shadow private boolean dealtDamage;
 
+    //#if MC>=12004
     protected TridentEntityMixin(EntityType<? extends PersistentProjectileEntity> type, World world, ItemStack stack) {
         super(type, world, stack);
     }
+    //#else
+    //$$ protected TridentEntityMixin(EntityType<? extends PersistentProjectileEntity> entityType, World world) {
+    //$$     super(entityType, world);
+    //$$ }
+    //#endif
 
     // skip inGroundTime > 4
     @Redirect(method = "tick", at = @At(value = "FIELD", target = "Lnet/minecraft/entity/projectile/TridentEntity;inGroundTime:I", opcode = Opcodes.GETFIELD))

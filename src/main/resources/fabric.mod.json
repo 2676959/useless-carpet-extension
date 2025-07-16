@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "uce",
   "version": "${version}",
-  "name": "useless-carpet-extension",
+  "name": "${name}",
   "description": "",
   "authors": [],
   "contact": {
@@ -20,8 +20,11 @@
     "uce.mixins.json"
   ],
   "depends": {
-    "fabricloader": ">=${loader_version}",
-    "minecraft": "${minecraft_version}",
-    "carpet": ""
+    "fabricloader": ">=0.15.11",
+    "minecraft": "${minecraft_dependency}",
+    "carpet": "${carpet_dependency}"
+  },
+  "custom": {
+    "modmenu:parent": "carpet"
   }
 }

@@ -14,6 +14,7 @@ import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.stat.Stats;
 import net.minecraft.text.MutableText;
+import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
@@ -28,9 +29,14 @@ import uce.UselessCarpetExtensionServer;
 
 import static uce.utils.ExplosiveProjectileHelper.setPowerFromEuler;
 import static uce.UselessCarpetExtensionSettings.throwableFireCharge;
+import static uce.utils.TextHelper.getStyleWithColor;
 
 @Mixin(FireChargeItem.class)
 public abstract class FireChargeItemMixin extends Item {
+    @Unique
+    final Style POWER_BAR_BG_COLOR = getStyleWithColor(5646848);
+    @Unique
+    final Style POWER_BAR_FG_COLOR = getStyleWithColor(15641624);
 
     @Shadow protected abstract void playUseSound(World world, BlockPos pos);
 
@@ -96,7 +102,7 @@ public abstract class FireChargeItemMixin extends Item {
             int chargedTime = this.getMaxUseTime(stack) - remainingUseTicks;
             int explosionPower = this.getExplosionPower(chargedTime);
             UselessCarpetExtensionServer.LOGGER.info("exp power: {}", explosionPower);
-            MutableText p = Text.literal("■".repeat(explosionPower)).withColor(15641624).append(Text.literal("■".repeat(8 - explosionPower)).withColor(5646848));
+            MutableText p = Text.literal("■".repeat(explosionPower)).setStyle(POWER_BAR_FG_COLOR).append(Text.literal("■".repeat(8 - explosionPower)).setStyle(POWER_BAR_BG_COLOR));
             playerEntity.sendMessage(p, true);
         }
     }

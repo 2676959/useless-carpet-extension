@@ -1,0 +1,111 @@
+apply plugin: 'maven-publish'
+apply plugin: 'fabric-loom'
+apply plugin: 'com.replaymod.preprocess'
+
+int mcVersion = project.mcVersion
+
+repositories {
+    maven {
+        url = 'https://masa.dy.fi/maven'
+    }
+}
+
+// https://github.com/FabricMC/fabric-loader/issues/783
+configurations {
+    modRuntimeOnly.exclude group: 'net.fabricmc', module: 'fabric-loader'
+}
+
+dependencies {
+    // loom
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
+    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+
+    // mods
+    if (project.carpet_core_version.matches('^com.github.[a-zA-Z0-9_-]+:fabric-carpet:[a-z0-9]+$')) {
+        modImplementation project.carpet_core_version  // jitpack
+    } else {
+        modImplementation "carpet:fabric-carpet:${project.carpet_core_version}"  // masa's maven
+    }
+}
+
+String MIXIN_CONFIG_PATH = 'uce.mixins.json'
+JavaVersion JAVA_COMPATIBILITY
+if (mcVersion >= 12005) {
+    JAVA_COMPATIBILITY = JavaVersion.VERSION_21
+} else if (mcVersion >= 11800) {
+    JAVA_COMPATIBILITY = JavaVersion.VERSION_17
+} else {
+    JAVA_COMPATIBILITY = JavaVersion.VERSION_16
+}
+JavaVersion MIXIN_COMPATIBILITY_LEVEL = JAVA_COMPATIBILITY
+
+String fullProjectVersion
+
+base.archivesName = project.archives_base_name
+fullProjectVersion = project.mod_version + '-mc' + project.game_versions
+
+version = fullProjectVersion
+
+// See https://youtrack.jetbrains.com/issue/IDEA-296490
+// if IDEA complains about "Cannot resolve resource filtering of MatchingCopyAction" and you want to know why
+processResources {
+    inputs.property "id", project.mod_id
+    inputs.property "name", project.mod_name
+    inputs.property "version", project.mod_version
+    inputs.property "minecraft_dependency", project.minecraft_dependency
+
+    filesMatching("fabric.mod.json") {
+        def valueMap = [
+                "id": project.mod_id,
+                "name": project.mod_name,
+                "version": project.mod_version,
+                "carpet_dependency": project.carpet_dependency,
+                "minecraft_dependency": project.minecraft_dependency,
+        ]
+        expand valueMap
+    }
+
+    filesMatching(MIXIN_CONFIG_PATH) {
+        filter { s -> s.replace('{{COMPATIBILITY_LEVEL}}', "JAVA_${MIXIN_COMPATIBILITY_LEVEL.ordinal() + 1}") }
+    }
+}
+
+// ensure that the encoding is set to UTF-8, no matter what the system default is
+// this fixes some edge cases with special characters not displaying correctly
+// see http://yodaconditions.net/blog/fix-for-java-file-encoding-problems-with-gradle.html
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = "UTF-8"
+    options.compilerArgs << "-Xlint:deprecation" << "-Xlint:unchecked"
+    if (JAVA_COMPATIBILITY <= JavaVersion.VERSION_1_8) {
+        // suppressed "source/target value 8 is obsolete and will be removed in a future release"
+        options.compilerArgs << '-Xlint:-options'
+    }
+}
+
+java {
+    sourceCompatibility = JAVA_COMPATIBILITY
+    targetCompatibility = JAVA_COMPATIBILITY
+
+    // Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
+    // if it is present.
+    // If you remove this line, sources will not be generated.
+    withSourcesJar()
+}
+
+jar {
+    from(rootProject.file('LICENSE')) {
+        rename { "${it}_${project.archives_base_name}" }
+    }
+}
+
+// configure the maven publication
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+            artifactId = base.archivesName.get()
+            version = fullProjectVersion
+        }
+    }
+}
